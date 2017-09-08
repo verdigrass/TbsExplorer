@@ -1,20 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="explorer.tbs.tencent.com.tbsexplorer.FullscreenActivity">
+    android:orientation="vertical"
+    tools:context="com.tencent.tbs.explorer.FullscreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView android:id="@+id/fullscreen_content"
+    <WebView android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
-        android:textColor="#33b5e5"
-        android:textStyle="bold"
-        android:textSize="50sp"
         android:gravity="center"
         android:text="@string/dummy_content" />
 
@@ -43,4 +41,4 @@
         </LinearLayout>
     </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>
