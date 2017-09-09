@@ -10,6 +10,8 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 
 /**
@@ -27,7 +29,7 @@ public class FullscreenActivity extends AppCompatActivity {
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
      */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private static final int AUTO_HIDE_DELAY_MILLIS = 500;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -38,7 +40,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private static String HOME_URL = "http://www.baidu.com";
 
     //content
-    private WebView mContentView;
+    private FrameLayout mContentView;
+
+    private WebView mWebView;
+
+    private Button dummy_button;
 
     private View mControlsView;
     private boolean mVisible;
@@ -52,9 +58,12 @@ public class FullscreenActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
 
-        mContentView = (WebView) findViewById(R.id.fullscreen_content);
+        mContentView = (FrameLayout) findViewById(R.id.fullscreen_content);
 
-        mContentView.setWebViewClient(new WebViewClient(){
+
+        mWebView = new WebView(this);
+
+        mWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // TODO Auto-generated method stub
@@ -65,7 +74,7 @@ public class FullscreenActivity extends AppCompatActivity {
         });
 
         //启用支持javascript
-        WebSettings settings = mContentView.getSettings();
+        WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -76,10 +85,17 @@ public class FullscreenActivity extends AppCompatActivity {
 //            }
 //        });
 
+
+        mContentView.addView(mWebView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.FILL_PARENT,
+                FrameLayout.LayoutParams.FILL_PARENT));
+
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        dummy_button = (Button)findViewById(R.id.dummy_button);
+        dummy_button.setAlpha(1.0f);
+        dummy_button.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -89,14 +105,21 @@ public class FullscreenActivity extends AppCompatActivity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        //delayedHide(100);
+
+        mControlsView.setVisibility(View.VISIBLE);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        mContentView.loadUrl(HOME_URL);
+        mWebView.loadUrl(HOME_URL);
     }
 
     /**
@@ -107,9 +130,9 @@ public class FullscreenActivity extends AppCompatActivity {
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
+            //if (AUTO_HIDE) {
                 delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
+            //}
             return false;
         }
     };
