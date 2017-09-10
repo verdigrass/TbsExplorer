@@ -44,7 +44,10 @@ public class FullscreenActivity extends AppCompatActivity {
 
     private WebView mWebView;
 
-    private Button dummy_button;
+    private Button home;
+
+    private Button btn_back;
+    private Button btn_forward;
 
     private View mControlsView;
     private boolean mVisible;
@@ -56,10 +59,17 @@ public class FullscreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
 
         mVisible = true;
+
         mControlsView = findViewById(R.id.fullscreen_content_controls);
 
         mContentView = (FrameLayout) findViewById(R.id.fullscreen_content);
 
+        initControls();
+
+    }
+
+
+    private void initControls() {
 
         mWebView = new WebView(this);
 
@@ -87,15 +97,62 @@ public class FullscreenActivity extends AppCompatActivity {
 
 
         mContentView.addView(mWebView, new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.FILL_PARENT,
-                FrameLayout.LayoutParams.FILL_PARENT));
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        dummy_button = (Button)findViewById(R.id.dummy_button);
-        dummy_button.setAlpha(1.0f);
-        dummy_button.setOnTouchListener(mDelayHideTouchListener);
+        home = (Button)findViewById(R.id.home);
+        home.setAlpha(1.0f);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mWebView instanceof  WebView) {
+                    mWebView.loadUrl(HOME_URL);
+                }
+
+            }
+        });
+
+        btn_back = (Button)findViewById(R.id.go_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mWebView != null && mWebView.canGoBack()) {
+                    mWebView.goBack();
+                }
+
+            }
+        });
+
+
+        btn_forward = (Button)findViewById(R.id.go_forward);
+        btn_forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mWebView != null && mWebView.canGoForward() ) {
+                    mWebView.goForward();
+                }
+
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // 这里处理逻辑代码，大家注意：该方法仅适用于2.0或更新版的sdk
+
+        if (mWebView != null && mWebView.canGoBack()) {
+            mWebView.goBack();
+        }
+
+        return;
     }
 
     @Override

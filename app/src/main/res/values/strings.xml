@@ -3,4 +3,18 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="music">\u265A</string>
+    <string name="crown">\u266B</string>
+
+
+
+    <string name="up_arrow">\u2191</string>
+    <string name="down_arrow">\u2193</string>
+
+
+    <string name="left_arrow">\u003C\u003C\u003C</string>
+    <string name="right_arrow">\u003E\u003E\u003E</string>
+
+    <string name="pai">\u03A0</string>
 </resources>
