@@ -1,10 +1,15 @@
 package com.tencent.tbs.explorer;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -12,13 +17,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity {
+public class FullscreenActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -46,15 +52,45 @@ public class FullscreenActivity extends AppCompatActivity {
 
     private Button home;
 
+    private GestureDetector detector;
     private Button btn_back;
     private Button btn_forward;
 
     private View mControlsView;
     private boolean mVisible;
 
+    private Context mContext;
+
+    private static final String CONTENT = "<html>"
+            + "<head>"
+                    + "<script>"
+                    + "function submit() {"
+                    + "var cc = document.getElementById(\"content\").value; var ss = cc.indexOf(\"http\");"
+                    + "if (ss == 0) {"
+                    + "    location.href=cc;"
+                    + "} else { location.href=\"https://www.baidu.com/s?wd=\" + cc; }"
+                    + "}"
+                    + "</script>"
+            + "</head>"
+            + "<body>"
+            + "<br>"
+            + "<br>"+ "<br>"+ "<br>"+ "<br>"+ "<br>"
+            + "<br>"//+ "<form name=\"search\" class=\"search\" method=\"post\" action=\"\"><br>　　" +
+            + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            + "<input type=\"text\" id=\"content\" class=\"search_in\" placeholder=\"Input URL/kewords to search\"  style=\"width:300px;height:30px\"/>\n"
+            + "<br><br>"
+            + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            + "<input type=\"submit\" name=\"send\" class=\"search_butt\" value=\"GO\" onClick=\"submit();\" style=\"width:50px;height:30px\" />\n"
+            //"</form>"
+            + "<br>"+ "<br>"+ "<br>"+ "<br>"+ "<br>"
+          +  "</body>"
+          +  "</html>";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
 
         setContentView(R.layout.activity_fullscreen);
 
@@ -68,6 +104,11 @@ public class FullscreenActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     private void initControls() {
 
@@ -110,11 +151,83 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (mWebView instanceof  WebView) {
-                    mWebView.loadUrl(HOME_URL);
+                    mWebView.loadData(CONTENT, "text/html", "UTF-8");
                 }
 
             }
         });
+
+        mWebView.getSettings().setDefaultTextEncodingName("UTF-8");
+
+
+/*
+        home.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                GestureDetector detector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+
+                    @Override
+                    public boolean onSingleTapUp(MotionEvent e) {
+                        return super.onSingleTapUp(e);
+                    }
+
+                    @Override
+                    public void onLongPress(MotionEvent e) {
+                        super.onLongPress(e);
+                    }
+
+                    @Override
+                    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                        return super.onScroll(e1, e2, distanceX, distanceY);
+                    }
+
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                        return super.onFling(e1, e2, velocityX, velocityY);
+                    }
+
+                    @Override
+                    public void onShowPress(MotionEvent e) {
+                        super.onShowPress(e);
+                    }
+
+                    @Override
+                    public boolean onDown(MotionEvent e) {
+                        return super.onDown(e);
+                    }
+
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+
+                        //showNativagtor();
+                        Toast.makeText(mContext, "onMultiTouch #2", Toast.LENGTH_SHORT).show();
+
+                        //return super.onDoubleTap(e);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onDoubleTapEvent(MotionEvent e) {
+                        return super.onDoubleTapEvent(e);
+                    }
+
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        return super.onSingleTapConfirmed(e);
+                    }
+
+                    @Override
+                    public boolean onContextClick(MotionEvent e) {
+                        return super.onContextClick(e);
+                    }
+                });
+                detector.onTouchEvent(event);
+
+                return false;
+            }
+        });
+*/
 
         btn_back = (Button)findViewById(R.id.go_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +254,9 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+
+        //创建手势检测器
+        detector = new GestureDetector(this,this);
     }
 
 
@@ -176,7 +292,9 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mWebView.loadUrl(HOME_URL);
+        //mWebView.loadUrl(HOME_URL);
+        //
+        mWebView.loadData(CONTENT, "text/html", "UTF-8");
     }
 
     /**
@@ -274,4 +392,146 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    @Override
+    public void onCreateSupportNavigateUpTaskStack(@NonNull TaskStackBuilder builder) {
+        super.onCreateSupportNavigateUpTaskStack(builder);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+//
+//    @Override
+//    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+//        return false;
+//    }
+
+    /**
+     * 滑屏监测
+     *
+     */
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                           float velocityY) {
+        float minMove = 120;         //最小滑动距离
+        float minVelocity = 0;      //最小滑动速度
+        float beginX = e1.getX();
+        float endX = e2.getX();
+        float beginY = e1.getY();
+        float endY = e2.getY();
+
+        if(beginX-endX>minMove&&Math.abs(velocityX)>minVelocity){   //左滑
+            Toast.makeText(this,velocityX+"左滑",Toast.LENGTH_SHORT).show();
+        }else if(endX-beginX>minMove&&Math.abs(velocityX)>minVelocity){   //右滑
+            Toast.makeText(this,velocityX+"右滑",Toast.LENGTH_SHORT).show();
+        }else if(beginY-endY>minMove&&Math.abs(velocityY)>minVelocity){   //上滑
+            Toast.makeText(this,velocityX+"上滑",Toast.LENGTH_SHORT).show();
+        }else if(endY-beginY>minMove&&Math.abs(velocityY)>minVelocity){   //下滑
+            Toast.makeText(this,velocityX+"下滑",Toast.LENGTH_SHORT).show();
+        }
+
+        return false;
+    }
+
+    //将该activity上的触碰事件交给GestureDetector处理
+    public boolean onTouchEvent(MotionEvent me){
+        return detector.onTouchEvent(me);
+    }
+
+
+//
+//    /**
+//     * 连续点击事件监听器 可以用作双击事件
+//     *
+//     */
+//    static abstract class OnMultiTouchListener implements OnTouchListener {
+//        /**
+//         * 上次 onTouch 发生的时间
+//         */
+//        private long lastTouchTime = 0;
+//        /**
+//         * 已经连续 touch 的次数
+//         */
+//        private AtomicInteger touchCount = new AtomicInteger(0);
+//
+//        private Runnable mRun = null;
+//
+//        public void removeCallback() {
+//            if (mRun != null) {
+//　　　　　　　  getMainLoopHandler().removeCallbacks(mRun);
+//                mRun = null;
+//            }
+//        }
+//
+//        @Override
+//        public boolean onTouch(final View v, final MotionEvent event) {
+//            if (event.getAction() == MotionEvent.ACTION_UP) {
+//                final long now = System.currentTimeMillis();
+//                lastTouchTime = now;
+//
+//                touchCount.incrementAndGet();
+//　　　　　　　//每点击一次就移除上一次的延迟任务，重新布置一个延迟任务
+//                removeCallback();
+//
+//                mRun = new Runnable() {
+//                    @Override
+//                    public void run() {
+//　　　　　　　　　　　　//两个变量相等,表示时隔 multiTouchInterval之后没有新的touch产生, 触发事件并重置touchCount
+//                        if (now == lastTouchTime) {
+//                            onMultiTouch(v, event, touchCount.get());
+//                            touchCount.set(0);
+//                        }
+//                    }
+//                };
+//
+//                postTaskInUIThread(mRun, getMultiTouchInterval());
+//            }
+//            return true;
+//        }
+//
+//        /**
+//         * 连续touch的最大间隔, 超过该间隔将视为一次新的touch开始， 默认是400，推荐值，也可以由客户代码指定
+//         *
+//         * @return
+//         */
+//        protected int getMultiTouchInterval() {
+//            return 400;
+//        }
+//
+//        /**
+//         * 连续点击事件回调
+//         *
+//         * @param v
+//         * @param event
+//         * @param touchCount
+//         *            连续点击的次数
+//         * @return
+//         */
+//        public abstract void onMultiTouch(View v, MotionEvent event, int touchCount);
+//    }
 }
+
+
