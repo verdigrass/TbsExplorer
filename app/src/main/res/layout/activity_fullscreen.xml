@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="#ffffff"
     android:orientation="vertical"
-    tools:context="com.tencent.tbs.explorer.FullscreenActivity">
+    tools:context="com.tencent.tbs.example.FullscreenActivity">
 
     <!-- weight is important -->
     <LinearLayout
@@ -21,40 +21,5 @@
 
 
     </LinearLayout>
-
-    <LinearLayout android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            >
-
-            <!-- tools:ignore="UselessParent" -->
-
-            <Button android:id="@+id/go_back"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/left_arrow" />
-
-            <Button android:id="@+id/home"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/pai" />
-
-            <Button android:id="@+id/go_forward"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/right_arrow" />
-
-        </LinearLayout>
-
 
 </LinearLayout>

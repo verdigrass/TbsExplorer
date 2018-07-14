@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tencent.tbs.explorer" >
+    package="com.tencent.tbs.example">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/pandora_s_box"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/pandora_s_box"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".FullscreenActivity"
+            android:name="com.tencent.tbs.example.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- 增加内核首次加载时优化Service -->
+        <service
+            android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
+            android:label="dexopt"
+            android:process=":dexopt" />
+        <service
+            android:name="isolated.example.tiny.com.isolatedprocessdemo.ISolatedService"
+            android:isolatedProcess="true"
+            android:process=":isolated" />
+
+        <activity
+            android:name="com.tencent.tbs.example.ScrollingActivity"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
 
     </application>
